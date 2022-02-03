@@ -400,12 +400,31 @@ var Dialog = (() => { // eslint-disable-line no-unused-vars, no-var
 	function _resizeHandler(ev) {
 		const top = ev && ev.data && typeof ev.data.top !== 'undefined' ? ev.data.top : 50;
 
+		const oldPos = {
+			left : _$dialog[0].style.left,
+			right : _$dialog[0].style.right,
+			top : _$dialog[0].style.bottom,
+			bottom : _$dialog[0].style.top
+		};
+		const newPos = _calcPosition(top);
+
+		// If the old position and the new position would be identical, restore the CSS & exit without resizing
+		if (
+			oldPos.left === newPos.left &&
+			oldPos.right === newPos.right &&
+			oldPos.bottom === newPos.bottom &&
+			oldPos.top === newPos.top
+		) {
+			_$dialog.css(oldPos);
+			return;
+		}
+
 		if (_$dialog.css('display') === 'block') {
 			// Stow the dialog.
 			_$dialog.css({ display : 'none' });
 
 			// Restore the dialog with its new positional properties.
-			_$dialog.css(jQuery.extend({ display : '' }, _calcPosition(top)));
+			_$dialog.css(jQuery.extend({ display : '' }, newPos));
 		}
 	}
 
